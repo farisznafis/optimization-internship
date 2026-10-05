@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install -e ".[dev,demo]"
+      - name: Lint
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Test
+        run: pytest
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t optimization-internship .
+      - name: Smoke test
+        run: |
+          docker run --rm optimization-internship course-selection
+          docker run --rm optimization-internship stock-selection
+          docker run --rm optimization-internship task-assignment --mini --quiet --output /tmp/out
+
+  # Publishes the Gradio demo to Hugging Face Spaces after the tests pass on main.
+  # Setup: repository variable HF_SPACE (e.g. your-hf-name/optimization-internship)
+  # and repository secret HF_TOKEN (a Hugging Face token with write access).
+  deploy-space:
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.HF_SPACE != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble Space files
+        run: |
+          mkdir -p space/projects
+          cp app.py requirements.txt space/
+          cp deploy/huggingface/README.md space/README.md
+          cp -r src configs space/
+          for project in course_selection stock_selection burrito_game task_assignment; do
+            mkdir -p "space/projects/$project"
+            cp -r "projects/$project/data" "space/projects/$project/"
+          done
+          # Hugging Face only accepts binary files through Xet/LFS; the app needs none of them.
+          find space -type f \( -name '*.xlsx' -o -name '*.png' -o -name '*.pdf' \) -delete
+      - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          cd space
+          git init -q -b main
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_SHA::7} from GitHub"
+          git push --force "https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE}" main

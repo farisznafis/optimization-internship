@@ -1,0 +1,9 @@
+Challenge #2
+ 
+Data: https://docs.google.com/spreadsheets/d/19B0p3xP6ffF4DeWMf3zpmC5leOolukb6-Qd0NIlMAtU/edit?usp=sharing
+ 
+Goal: Find the optimal investment allocation that maximizes the annualized average return while keeping the portfolio risk below the threshold (15%). The initial investment is USD 10k.
+ 
+Formula:
+Annualized Average Return = (1 + avg_return)^(1/number_of_period) - 1 
+Portfolio Risk: sqrt( sum( (individual_stock_risk^2) * (investment_allocation) ) )

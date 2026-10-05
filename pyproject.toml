@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "optimization-internship"
+version = "1.0.0"
+description = "Optimization projects from the TK Bunga Matahari internship: course selection, portfolio, burrito game and Scrum task assignment."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "TK Bunga Matahari Team" }]
+dependencies = [
+    "gurobipy>=11",
+    "ortools>=9.8",
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "matplotlib>=3.9",
+    "pyyaml>=6",
+    "python-dotenv>=1",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+demo = ["gradio>=6"]
+notebooks = ["jupyterlab", "seaborn", "plotly"]
+
+[project.scripts]
+optim = "optimization_internship.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]  # so tests can import app.py
+
+[tool.ruff]
+line-length = 110
+src = ["src", "tests"]
+extend-exclude = ["archive", "*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501", "B905"]  # line length is handled by the formatter
