@@ -1,12 +1,12 @@
 # optimization-internship
 
-[![Live demo](https://img.shields.io/badge/Live%20demo-Hugging%20Face%20Spaces-yellow?logo=huggingface)](https://huggingface.co/spaces/YOUR_HF_USERNAME/optimization-internship)
-[![CI](https://github.com/YOUR_GITHUB_USERNAME/optimization-internship/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_GITHUB_USERNAME/optimization-internship/actions/workflows/ci.yml)
+[![Live demo](https://img.shields.io/badge/Live%20demo-Hugging%20Face%20Spaces-yellow?logo=huggingface)](https://huggingface.co/spaces/farisznafis/optimization-internship)
+[![CI](https://github.com/farisznafis/optimization-internship/actions/workflows/ci.yml/badge.svg)](https://github.com/farisznafis/optimization-internship/actions/workflows/ci.yml)
 
 Optimization projects built by the **TK Bunga Matahari** team during our internship: three warm-up
 challenges and one main project, a multi-objective Scrum task-assignment model solved with Gurobi.
 Everything runs from one command-line tool, `optim`, locally or in Docker, and from an
-**[interactive web demo](https://huggingface.co/spaces/YOUR_HF_USERNAME/optimization-internship)**
+**[interactive web demo](https://huggingface.co/spaces/farisznafis/optimization-internship)**
 where you can change the inputs and re-solve the models live.
 
 ![Goal programming compared with the three single objectives](projects/task_assignment/results/score_comparison.png)

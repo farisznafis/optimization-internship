@@ -1,0 +1,29 @@
+name: Keep Space awake
+
+# Free Hugging Face Spaces sleep after 48 hours without visitors. Opening the app
+# every 12 hours keeps the demo warm for portfolio visitors.
+# GitHub pauses scheduled workflows after 60 days without repository activity;
+# re-enable it from the Actions tab if that happens.
+on:
+  schedule:
+    - cron: "17 */12 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    if: vars.HF_SPACE != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open the Space
+        env:
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          # owner/name -> owner-name.hf.space (the app itself, not the Hub page)
+          host="$(echo "${HF_SPACE//\//-}" | tr '[:upper:]_.' '[:lower:]--').hf.space"
+          for attempt in 1 2 3 4 5; do
+            status=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "https://${host}/") || status=000
+            echo "Attempt ${attempt}: HTTP ${status} from ${host}"
+            [ "$status" = "200" ] && exit 0
+            sleep 60
+          done
+          echo "::warning::Space did not answer with 200; it may still be building or waking up."
