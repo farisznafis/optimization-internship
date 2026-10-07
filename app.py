@@ -36,6 +36,18 @@ SIZE_LIMITED_MAX_VARIABLES = 2000
 SOLVE_TIME_LIMIT = 30  # seconds per Gurobi solve
 MAX_UPLOAD = "1mb"
 
+# Free Hugging Face Gradio Spaces only run on ZeroGPU, which refuses to start unless at least one
+# @spaces.GPU function exists. The solvers are CPU-only, so this stub is never called.
+try:
+    import spaces
+
+    @spaces.GPU
+    def _zerogpu_stub() -> None:
+        pass
+
+except ImportError:  # local runs and Docker don't need the `spaces` package
+    pass
+
 MINI, UPLOAD = "Mini sample (5 talents, 10 tasks)", "Upload my own CSV files"
 CA, WED = "Competency Assessment (MSG)", "Weighted Euclidean Distance"
 
