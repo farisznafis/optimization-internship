@@ -9,7 +9,7 @@ python_version: "3.12"
 app_file: app.py
 pinned: false
 license: mit
-short_description: Task assignment, burrito trucks, portfolio and courses, solved live
+short_description: Optimization demos solved live with Gurobi and OR-Tools
 ---
 
 # Optimization Internship · TK Bunga Matahari
